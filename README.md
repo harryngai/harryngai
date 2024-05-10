@@ -25,7 +25,8 @@ _Specifically designed for educational purposes to demonstrate and teach the bas
 - [Memory Matching Game](https://harryngai.github.io/memory-matching-game): A card game where the objective is to find pairs of matching cards. This game helps in improving memory skills.
 
 #### Connect with Me 🤝
-- Find Me Around the School 🏫
+- Find me around the school 🏫
+- https://www.harryngai.com
 - https://linkedin.com/in/harryngai
 
 #### Support Me ☕
