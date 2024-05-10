@@ -19,7 +19,7 @@ _Specifically designed for educational purposes to demonstrate and teach the bas
 #### My Stats 📈
 ![Your GitHub Stats](https://github-readme-stats.vercel.app/api?username=harryngai&show_icons=true&theme=tokyonight)
 
-#### My Projects 🌟
+#### Classwork Answers for My Students 🌟
 - [Dynamic Clickable Grid](https://harryngai.github.io/Dynamic-Clickable-Grid/): A web-based interactive application where users can create a grid of customizable size and click on individual cells to cycle through different colors.
 - [Tic-Tac-Toe](https://harryngai.github.io/tictactoe/): A classic two-player game where the goal is to get three of your marks in a row, column, or diagonal before your opponent.
 - [Memory Matching Game](https://harryngai.github.io/memory-matching-game): A card game where the objective is to find pairs of matching cards. This game helps in improving memory skills.
