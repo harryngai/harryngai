@@ -1,5 +1,5 @@
 {
- "count": 4,
+ "count": 5,
  "log": [
   {
    "cmd": "whoami",
@@ -16,9 +16,44 @@
   {
    "cmd": "fortune",
    "out": "weeks of coding can save you hours of planning."
+  },
+  {
+   "cmd": "play 2048",
+   "out": "2048\n   .      .      .      .\n   .      2      .      .\n   .      .      .      .\n   .      .      .      2\nscore 0   move: up/down/left/right  ·  quit"
   }
  ],
  "last_actor": "harryngai",
- "last_time": "2026-07-16 16:08 UTC",
- "game": null
+ "last_time": "2026-07-16 16:09 UTC",
+ "game": {
+  "name": "2048",
+  "board": [
+   [
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    2,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    2
+   ]
+  ],
+  "score": 0,
+  "over": false,
+  "won": false
+ }
 }
