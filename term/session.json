@@ -1,5 +1,5 @@
 {
- "count": 7,
+ "count": 8,
  "log": [
   {
    "cmd": "whoami",
@@ -28,6 +28,10 @@
   {
    "cmd": "play 2048",
    "out": "2048\n   .      .      .      .\n   .      .      .      .\n   .      .      2      2\n   .      .      .      .\nscore 0   move: up/down/left/right  ·  quit"
+  },
+  {
+   "cmd": "up",
+   "out": "2048\n   .      .      2      2\n   .      .      .      .\n   .      .      .      2\n   .      .      .      .\nscore 0   move: up/down/left/right  ·  quit"
   }
  ],
  "last_actor": "harryngai",
@@ -38,19 +42,19 @@
    [
     0,
     0,
-    0,
-    0
-   ],
-   [
-    0,
-    0,
-    0,
-    0
-   ],
-   [
-    0,
-    0,
     2,
+    2
+   ],
+   [
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
     2
    ],
    [

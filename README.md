@@ -1,15 +1,6 @@
 ```
 ┌─ harryngai@github — zsh ───────────────────────── [_][o][x] ─┐
 │   ⋮                                                          │
-│ guest@github:~$ neofetch                                     │
-│           _____         harryngai@github                     │
-│          /     \        ----------------                     │
-│         | () () |       os      github-actions · ubuntu      │
-│          \  ^  /        shell   interp.py (sandboxed)        │
-│           |||||         cmds    4 run                        │
-│           |||||         last    @harryngai                   │
-│                         clock   2026-07-16 06:43 UTC         │
-│                         uptime  since 2024-02-23             │
 │ guest@github:~$ fortune                                      │
 │   there are 2 hard problems in CS: cache invalidation, nami… │
 │ guest@github:~$ play 2048                                    │
@@ -19,9 +10,16 @@
 │      .      .      2      2                                  │
 │      .      .      .      .                                  │
 │   score 0   move: up/down/left/right  ·  quit                │
+│ guest@github:~$ up                                           │
+│   2048                                                       │
+│      .      .      2      2                                  │
+│      .      .      .      .                                  │
+│      .      .      .      2                                  │
+│      .      .      .      .                                  │
+│   score 0   move: up/down/left/right  ·  quit                │
 │ guest@github:~$ █                                            │
 ├──────────────────────────────────────────────────────────────┤
-│ cmds 7  ·  last @harryngai  ·  2026-07-16 06:54 UTC          │
+│ cmds 8  ·  last @harryngai  ·  2026-07-16 06:54 UTC          │
 └──────────────────────────────────────────────────────────────┘
 ```
 
