@@ -1,5 +1,5 @@
 {
- "count": 4,
+ "count": 5,
  "log": [
   {
    "cmd": "play mines",
@@ -16,10 +16,14 @@
   {
    "cmd": "reveal e5",
    "out": "revealed e5: 0 adjacent mine(s) · cleared 46/71"
+  },
+  {
+   "cmd": "cat .hint",
+   "out": "vault.enc is sealed. the key is in plain sight, base64'd:\n  b3Blbi1zZXNhbWU=\n  decode it, then:  unlock <key>"
   }
  ],
  "last_actor": "harryngai",
- "last_time": "2026-07-16 19:29 UTC",
+ "last_time": "2026-07-16 19:47 UTC",
  "game": {
   "name": "mines",
   "n": 9,
