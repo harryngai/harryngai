@@ -1,8 +1,5 @@
 ```
 ┌─ harryngai@github — zsh ───────────────────────── [_][o][x] ─┐
-│   ⋮                                                          │
-│ guest@github:~$ fortune                                      │
-│   there are 2 hard problems in CS: cache invalidation, nami… │
 │ guest@github:~$ play 2048                                    │
 │   2048                                                       │
 │      .      .      .      .                                  │
@@ -17,9 +14,14 @@
 │      .      .      .      2                                  │
 │      .      .      .      .                                  │
 │   score 0   move: up/down/left/right  ·  quit                │
+│ guest@github:~$ help                                         │
+│   commands:  help  ls  cat <f>  whoami  id  date  uptime  e… │
+│              neofetch  fortune  cowsay <t>  history  unlock… │
+│   games:     games  ·  play 2048  ·  rps <r|p|s>  ·  guess … │
+│   there's a flag{} hidden in the filesystem. poke around.    │
 │ guest@github:~$ █                                            │
 ├──────────────────────────────────────────────────────────────┤
-│ cmds 8  ·  last @harryngai  ·  2026-07-16 06:54 UTC          │
+│ cmds 9  ·  last @harryngai  ·  2026-07-16 08:24 UTC          │
 └──────────────────────────────────────────────────────────────┘
 ```
 

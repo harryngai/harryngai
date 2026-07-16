@@ -1,5 +1,5 @@
 {
- "count": 8,
+ "count": 9,
  "log": [
   {
    "cmd": "whoami",
@@ -32,10 +32,14 @@
   {
    "cmd": "up",
    "out": "2048\n   .      .      2      2\n   .      .      .      .\n   .      .      .      2\n   .      .      .      .\nscore 0   move: up/down/left/right  ·  quit"
+  },
+  {
+   "cmd": "help",
+   "out": "commands:  help  ls  cat <f>  whoami  id  date  uptime  echo <t>\n           neofetch  fortune  cowsay <t>  history  unlock <key>\ngames:     games  ·  play 2048  ·  rps <r|p|s>  ·  guess <n>\nthere's a flag{} hidden in the filesystem. poke around."
   }
  ],
  "last_actor": "harryngai",
- "last_time": "2026-07-16 06:54 UTC",
+ "last_time": "2026-07-16 08:24 UTC",
  "game": {
   "name": "2048",
   "board": [
