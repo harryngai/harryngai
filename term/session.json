@@ -1,0 +1,27 @@
+{
+ "count": 5,
+ "log": [
+  {
+   "cmd": "whoami",
+   "out": "guest — visitor #1, clearance: curious, taste: impeccable"
+  },
+  {
+   "cmd": "ls",
+   "out": ".  ..  motd  .hint  vault.enc  games/  readme.md"
+  },
+  {
+   "cmd": "help",
+   "out": "commands:\n  help  ls  cat <f>  whoami  id  date  uptime  echo <t>\n  neofetch  fortune  cowsay <t>  history  rps <r|p|s>\n  unlock <key>  sudo <..>  clear  about\nhidden ones exist. poke around."
+  },
+  {
+   "cmd": "cat motd",
+   "out": "welcome, stranger.\n  this box is a real terminal wearing a github profile.\n  every command you run is executed by a robot and written back here.\n  rule: the box says nothing about its owner. try `help`."
+  },
+  {
+   "cmd": "neofetch",
+   "out": "        _____         harryngai@github\n       /     \\        ----------------\n      | () () |       os      github-actions · ubuntu\n       \\  ^  /        shell   interp.py (sandboxed)\n        |||||         cmds    4 run\n        |||||         last    @harryngai\n                      clock   2026-07-16 06:43 UTC\n                      uptime  since 2024-02-23"
+  }
+ ],
+ "last_actor": "harryngai",
+ "last_time": "2026-07-16 06:43 UTC"
+}

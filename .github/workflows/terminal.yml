@@ -1,0 +1,63 @@
+name: terminal
+
+# A visitor "types a command" by opening an Issue whose title starts with "$".
+# This Action runs it through the sandboxed interpreter (term/run.py), writes the
+# result into the profile README, replies with the output, and closes the issue.
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write   # commit the updated README + session
+  issues: write     # comment on and close the command issue
+
+concurrency:
+  group: profile-terminal   # serialize so commits never race
+  cancel-in-progress: false
+
+jobs:
+  run:
+    # only act on "command" issues; ignore normal issues entirely
+    if: ${{ startsWith(github.event.issue.title, '$') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Execute command
+        env:
+          # passed via env (never interpolated into the shell) so a crafted
+          # issue title can't inject anything
+          CMD: ${{ github.event.issue.title }}
+          ACTOR: ${{ github.event.issue.user.login }}
+        run: python3 term/run.py
+
+      - name: Commit result
+        env:
+          CMD: ${{ github.event.issue.title }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md term/session.json
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+          else
+            git commit -m "term: ${CMD}"
+            for i in 1 2 3; do
+              git push && break || { git pull --rebase --autostash origin main || true; sleep 2; }
+            done
+          fi
+
+      - name: Reply and close
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NUM: ${{ github.event.issue.number }}
+        run: |
+          {
+            echo '```'
+            cat term/last_output.txt
+            echo '```'
+            echo
+            echo "↳ ran on the profile terminal. refresh <https://github.com/harryngai>"
+          } > "$RUNNER_TEMP/reply.md"
+          gh issue comment "$NUM" --body-file "$RUNNER_TEMP/reply.md"
+          gh issue close "$NUM" --reason completed
