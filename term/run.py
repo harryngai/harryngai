@@ -161,26 +161,35 @@ def interpret(line, s):
     # active-game routing
     if game and game.get("name") == "2048" and cmd in DIRS:
         return play_2048(s, DIRS[cmd])
+    if game and game.get("name") == "mines" and cmd in ("reveal","r","dig","open","flag","f"):
+        return mines_cmd(s, cmd, args)
     if cmd in ("quit", "q") and game:
         s["game"] = None; return "quit game. back to the shell."
     if cmd in DIRS and not game:
-        return "no game running. start one:  play 2048   (or:  games)"
+        return "no game running. start one:  play mines   (or:  games)"
+    if cmd in ("reveal","dig","open","flag") and not (game and game.get("name") == "mines"):
+        return "no minesweeper running. start it:  play mines"
 
     if cmd == "help":
         return ("commands:  help  ls  cat <f>  whoami  id  date  uptime  echo <t>\n"
                 "           neofetch  fortune  cowsay <t>  history  unlock <key>\n"
-                "games:     games  ·  play 2048  ·  rps <r|p|s>  ·  guess <n>\n"
+                "games:     games · play mines · play 2048 · rps <r|p|s> · guess <n>\n"
                 "there's a flag{} hidden in the filesystem. poke around.")
     if cmd == "games":
-        return ("available games:\n  play 2048   slide tiles, w/a/s/d or up/down/left/right\n"
-                "  rps <r|p|s> rock paper scissors\n  guess <n>   1-100, i'm thinking of a number")
+        return ("available games:\n"
+                "  play mines  reveal/flag cells, don't hit a mine (9×9, 10 mines)\n"
+                "  play 2048   slide tiles, w/a/s/d or up/down/left/right\n"
+                "  rps <r|p|s> rock paper scissors\n  guess <n>   1-100, guess my number")
     if cmd == "play":
         g = (args[0].lower() if args else "")
+        if g == "mines":
+            s["game"] = mines_new()
+            return "minesweeper: 9×9, 10 mines. reveal a cell:  reveal e5  (first move is always safe)"
         if g == "2048": return start_2048(s)
         if g == "guess":
             s["game"] = {"name": "guess", "n": GAME_RND.randint(1, 100), "tries": 0}
             return "guessing game: i picked 1-100. type  guess <n>"
-        return "usage: play <2048|guess>   (see: games)"
+        return "usage: play <mines|2048|guess>   (see: games)"
     if cmd == "ls":  return "  ".join(LS)
     if cmd == "cat":
         if not args: return "cat: missing operand"
@@ -350,9 +359,122 @@ def svg_2048(s, g):
                         f"  ·  {s['last_time'] or now_utc()}"))
     return "".join(body)
 
+# ── game: minesweeper ───────────────────────────────────────────────────────
+MN = 9      # board size
+MM = 10     # mine count
+
+def mines_new():
+    return {"name": "mines", "n": MN, "m": MM,
+            "mine": [[0]*MN for _ in range(MN)], "adj": [[0]*MN for _ in range(MN)],
+            "shown": [[0]*MN for _ in range(MN)], "flag": [[0]*MN for _ in range(MN)],
+            "placed": False, "over": False, "won": False}
+
+def _mplace(g, sr, sc):
+    N = g["n"]; safe = {(sr+dr, sc+dc) for dr in (-1,0,1) for dc in (-1,0,1)}
+    cells = [(r, c) for r in range(N) for c in range(N) if (r, c) not in safe]
+    for r, c in GAME_RND.sample(cells, min(g["m"], len(cells))):
+        g["mine"][r][c] = 1
+    for r in range(N):
+        for c in range(N):
+            g["adj"][r][c] = sum(g["mine"][r+dr][c+dc] for dr in (-1,0,1) for dc in (-1,0,1)
+                                 if 0 <= r+dr < N and 0 <= c+dc < N)
+    g["placed"] = True
+
+def _mflood(g, r, c):
+    N = g["n"]; st = [(r, c)]
+    while st:
+        r, c = st.pop()
+        if g["shown"][r][c] or g["flag"][r][c]: continue
+        g["shown"][r][c] = 1
+        if g["adj"][r][c] == 0 and not g["mine"][r][c]:
+            for dr in (-1,0,1):
+                for dc in (-1,0,1):
+                    nr, nc = r+dr, c+dc
+                    if 0 <= nr < N and 0 <= nc < N and not g["shown"][nr][nc]:
+                        st.append((nr, nc))
+
+def mines_reveal(g, r, c):
+    if not g["placed"]: _mplace(g, r, c)
+    if g["flag"][r][c] or g["shown"][r][c]: return
+    if g["mine"][r][c]:
+        g["over"] = True
+        for rr in range(g["n"]):
+            for cc in range(g["n"]):
+                if g["mine"][rr][cc]: g["shown"][rr][cc] = 1
+        return
+    _mflood(g, r, c)
+    N = g["n"]
+    if all(g["shown"][rr][cc] or g["mine"][rr][cc] for rr in range(N) for cc in range(N)):
+        g["won"] = True
+
+def _cell(tok):
+    m = re.search(r"[a-iA-I]", tok); n = re.search(r"[1-9]", tok)
+    if not m or not n: return None
+    r = ord(m.group().lower()) - 97; c = int(n.group()) - 1
+    return (r, c) if 0 <= r < MN and 0 <= c < MN else None
+
+def mines_cmd(s, cmd, args):
+    g = s["game"]
+    if g["over"] or g["won"]: return "game finished. `play mines` for a fresh board."
+    if not args: return f"usage: {cmd} <cell>   e.g.  {cmd} e5"
+    rc = _cell(args[0])
+    if not rc: return f"'{args[0]}'? use a cell like  b3  (row a-i, col 1-9)"
+    r, c = rc; tok = args[0].lower()
+    if cmd in ("flag", "f"):
+        if not g["shown"][r][c]: g["flag"][r][c] ^= 1
+        F = sum(map(sum, g["flag"]))
+        return f"flag {tok} {'planted' if g['flag'][r][c] else 'removed'} · flags {F}/{g['m']}"
+    mines_reveal(g, r, c)
+    if g["over"]: return f"boom — {tok} was a mine. game over. `play mines`"
+    if g["won"]:  return "swept! every safe cell cleared. you win."
+    shown = sum(map(sum, g["shown"]))
+    return f"revealed {tok}: {g['adj'][r][c]} adjacent mine(s) · cleared {shown}/{MN*MN-MM}"
+
+NUMCOL = {1:"#58a6ff",2:"#3fb950",3:"#f85149",4:"#bc8cff",5:"#f0883e",6:"#39c5cf",7:WHITE,8:"#8b949e"}
+def svg_mines(s, g):
+    N = g["n"]; cell, gap = 40, 3
+    bw = N*cell + (N-1)*gap
+    ox = (W - bw) / 2; oy = 92
+    h = oy + bw + 58
+    F = sum(map(sum, g["flag"])); shown = sum(map(sum, g["shown"]))
+    body = [_chrome(h, f"minesweeper — {N}×{N} · {g['m']} mines")]
+    for c in range(N):
+        body.append(f'<text x="{ox+c*(cell+gap)+cell/2:.0f}" y="{oy-10}" text-anchor="middle" '
+                    f'font-size="12" fill="{DIM}">{c+1}</text>')
+    for r in range(N):
+        body.append(f'<text x="{ox-14:.0f}" y="{oy+r*(cell+gap)+cell/2+4:.0f}" text-anchor="middle" '
+                    f'font-size="12" fill="{DIM}">{chr(65+r)}</text>')
+    for r in range(N):
+        for c in range(N):
+            x = ox + c*(cell+gap); y = oy + r*(cell+gap); cx = x+cell/2; cy = y+cell/2
+            sh, mn, fl, ad = g["shown"][r][c], g["mine"][r][c], g["flag"][r][c], g["adj"][r][c]
+            if sh and mn:
+                body.append(f'<rect x="{x:.0f}" y="{y:.0f}" width="{cell}" height="{cell}" rx="4" fill="#8b1a1a"/>')
+                body.append(f'<circle cx="{cx:.0f}" cy="{cy:.0f}" r="8" fill="#0d0d0d" stroke="#f0f0f0" stroke-width="1.5"/>')
+            elif sh:
+                body.append(f'<rect x="{x:.0f}" y="{y:.0f}" width="{cell}" height="{cell}" rx="4" fill="#161b22" stroke="#21262d"/>')
+                if ad > 0:
+                    body.append(f'<text x="{cx:.0f}" y="{cy+8:.0f}" text-anchor="middle" font-size="22" '
+                                f'font-weight="bold" fill="{NUMCOL.get(ad, WHITE)}">{ad}</text>')
+            else:
+                body.append(f'<rect x="{x:.0f}" y="{y:.0f}" width="{cell}" height="{cell}" rx="4" fill="#3b434d"/>')
+                body.append(f'<rect x="{x:.0f}" y="{y:.0f}" width="{cell}" height="3" rx="1.5" fill="#4b555f"/>')
+                if fl:
+                    body.append(f'<line x1="{cx-5:.0f}" y1="{cy-10:.0f}" x2="{cx-5:.0f}" y2="{cy+11:.0f}" stroke="#c9d1d9" stroke-width="2"/>')
+                    body.append(f'<polygon points="{cx-5:.0f},{cy-10:.0f} {cx+8:.0f},{cy-5:.0f} {cx-5:.0f},{cy:.0f}" fill="#f85149"/>')
+    hint = ("boom! `play mines` to retry" if g["over"] else
+            "swept! `play mines` again" if g["won"] else
+            "reveal <cell> · flag <cell>   e.g.  reveal e5")
+    body.append(f'<text x="{W/2}" y="{oy+bw+26:.0f}" text-anchor="middle" font-size="15" '
+                f'fill="{GRAY}" xml:space="preserve">{esc(hint)}</text>')
+    body.append(_end(h, f"mines {g['m']} · flags {F} · cleared {shown}/{N*N-g['m']}"))
+    return "".join(body)
+
 def render_svg(s):
-    g = s.get("game")
-    SVG.write_text(svg_2048(s, g) if (g and g.get("name") == "2048") else svg_terminal(s))
+    g = s.get("game"); name = g.get("name") if g else None
+    if name == "2048":    SVG.write_text(svg_2048(s, g))
+    elif name == "mines": SVG.write_text(svg_mines(s, g))
+    else:                 SVG.write_text(svg_terminal(s))
 
 # ── README (image is the star) ──────────────────────────────────────────────
 def issue_link(cmd):
@@ -362,7 +484,7 @@ def issue_link(cmd):
                 f"Then refresh https://github.com/{USER}"})
     return f"https://github.com/{USER}/{USER}/issues/new?{q}"
 
-BAR = ["help", "play 2048", "neofetch", "fortune", "ls", "rps rock", "cat .hint"]
+BAR = ["help", "play mines", "play 2048", "neofetch", "fortune", "rps rock", "cat .hint"]
 
 def render(s):
     img = (f"https://raw.githubusercontent.com/{USER}/{USER}/main/term/screen.svg"
@@ -376,7 +498,7 @@ def render(s):
         "",
         "<sub>a live, shared terminal, rendered as an image. your command opens an "
         "issue → a GitHub Action runs it (sandboxed, not a real shell) → this picture "
-        "updates in ~30s. try `play 2048`.</sub>", "",
+        "updates in ~30s. try `play mines`.</sub>", "",
     ]
     README.write_text("\n".join(parts) + "\n")
 

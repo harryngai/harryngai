@@ -1,63 +1,20 @@
 {
- "count": 6,
+ "count": 3,
  "log": [
-  {
-   "cmd": "whoami",
-   "out": "guest — visitor #1, clearance: curious"
-  },
   {
    "cmd": "ls",
    "out": ".  ..  motd  .hint  vault.enc  games/  readme.md"
   },
   {
+   "cmd": "games",
+   "out": "available games:\n  play mines  reveal/flag cells, don't hit a mine (9×9, 10 mines)\n  play 2048   slide tiles, w/a/s/d or up/down/left/right\n  rps <r|p|s> rock paper scissors\n  guess <n>   1-100, guess my number"
+  },
+  {
    "cmd": "cat .hint",
    "out": "vault.enc is sealed. the key is in plain sight, base64'd:\n  b3Blbi1zZXNhbWU=\n  decode it, then:  unlock <key>"
-  },
-  {
-   "cmd": "fortune",
-   "out": "weeks of coding can save you hours of planning."
-  },
-  {
-   "cmd": "play 2048",
-   "out": "2048\n   .      .      .      .\n   .      2      .      .\n   .      .      .      .\n   .      .      .      2\nscore 0   move: up/down/left/right  ·  quit"
-  },
-  {
-   "cmd": "play 2048",
-   "out": "2048\n   .      .      .      2\n   .      .      .      .\n   2      .      .      .\n   .      .      .      .\nscore 0   move: up/down/left/right  ·  quit"
   }
  ],
  "last_actor": "harryngai",
- "last_time": "2026-07-16 16:30 UTC",
- "game": {
-  "name": "2048",
-  "board": [
-   [
-    0,
-    0,
-    0,
-    2
-   ],
-   [
-    0,
-    0,
-    0,
-    0
-   ],
-   [
-    2,
-    0,
-    0,
-    0
-   ],
-   [
-    0,
-    0,
-    0,
-    0
-   ]
-  ],
-  "score": 0,
-  "over": false,
-  "won": false
- }
+ "last_time": "2026-07-16 17:22 UTC",
+ "game": null
 }
