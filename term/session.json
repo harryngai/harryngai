@@ -1,75 +1,24 @@
 {
- "count": 9,
+ "count": 4,
  "log": [
   {
    "cmd": "whoami",
-   "out": "guest — visitor #1, clearance: curious, taste: impeccable"
+   "out": "guest — visitor #1, clearance: curious"
   },
   {
    "cmd": "ls",
    "out": ".  ..  motd  .hint  vault.enc  games/  readme.md"
   },
   {
-   "cmd": "help",
-   "out": "commands:\n  help  ls  cat <f>  whoami  id  date  uptime  echo <t>\n  neofetch  fortune  cowsay <t>  history  rps <r|p|s>\n  unlock <key>  sudo <..>  clear  about\nhidden ones exist. poke around."
-  },
-  {
-   "cmd": "cat motd",
-   "out": "welcome, stranger.\n  this box is a real terminal wearing a github profile.\n  every command you run is executed by a robot and written back here.\n  rule: the box says nothing about its owner. try `help`."
-  },
-  {
-   "cmd": "neofetch",
-   "out": "        _____         harryngai@github\n       /     \\        ----------------\n      | () () |       os      github-actions · ubuntu\n       \\  ^  /        shell   interp.py (sandboxed)\n        |||||         cmds    4 run\n        |||||         last    @harryngai\n                      clock   2026-07-16 06:43 UTC\n                      uptime  since 2024-02-23"
+   "cmd": "cat .hint",
+   "out": "vault.enc is sealed. the key is in plain sight, base64'd:\n  b3Blbi1zZXNhbWU=\n  decode it, then:  unlock <key>"
   },
   {
    "cmd": "fortune",
-   "out": "there are 2 hard problems in CS: cache invalidation, naming, and off-by-one."
-  },
-  {
-   "cmd": "play 2048",
-   "out": "2048\n   .      .      .      .\n   .      .      .      .\n   .      .      2      2\n   .      .      .      .\nscore 0   move: up/down/left/right  ·  quit"
-  },
-  {
-   "cmd": "up",
-   "out": "2048\n   .      .      2      2\n   .      .      .      .\n   .      .      .      2\n   .      .      .      .\nscore 0   move: up/down/left/right  ·  quit"
-  },
-  {
-   "cmd": "help",
-   "out": "commands:  help  ls  cat <f>  whoami  id  date  uptime  echo <t>\n           neofetch  fortune  cowsay <t>  history  unlock <key>\ngames:     games  ·  play 2048  ·  rps <r|p|s>  ·  guess <n>\nthere's a flag{} hidden in the filesystem. poke around."
+   "out": "weeks of coding can save you hours of planning."
   }
  ],
  "last_actor": "harryngai",
- "last_time": "2026-07-16 08:24 UTC",
- "game": {
-  "name": "2048",
-  "board": [
-   [
-    0,
-    0,
-    2,
-    2
-   ],
-   [
-    0,
-    0,
-    0,
-    0
-   ],
-   [
-    0,
-    0,
-    0,
-    2
-   ],
-   [
-    0,
-    0,
-    0,
-    0
-   ]
-  ],
-  "score": 0,
-  "over": false,
-  "won": false
- }
+ "last_time": "2026-07-16 16:08 UTC",
+ "game": null
 }
