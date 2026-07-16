@@ -1,11 +1,6 @@
 ```
 ┌─ harryngai@github — zsh ───────────────────────── [_][o][x] ─┐
 │   ⋮                                                          │
-│ guest@github:~$ cat motd                                     │
-│   welcome, stranger.                                         │
-│     this box is a real terminal wearing a github profile.    │
-│     every command you run is executed by a robot and writte… │
-│     rule: the box says nothing about its owner. try `help`.  │
 │ guest@github:~$ neofetch                                     │
 │           _____         harryngai@github                     │
 │          /     \        ----------------                     │
@@ -17,9 +12,16 @@
 │                         uptime  since 2024-02-23             │
 │ guest@github:~$ fortune                                      │
 │   there are 2 hard problems in CS: cache invalidation, nami… │
+│ guest@github:~$ play 2048                                    │
+│   2048                                                       │
+│      .      .      .      .                                  │
+│      .      .      .      .                                  │
+│      .      .      2      2                                  │
+│      .      .      .      .                                  │
+│   score 0   move: up/down/left/right  ·  quit                │
 │ guest@github:~$ █                                            │
 ├──────────────────────────────────────────────────────────────┤
-│ cmds 6  ·  last @harryngai  ·  2026-07-16 06:45 UTC          │
+│ cmds 7  ·  last @harryngai  ·  2026-07-16 06:54 UTC          │
 └──────────────────────────────────────────────────────────────┘
 ```
 

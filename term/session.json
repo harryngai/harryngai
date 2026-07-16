@@ -1,5 +1,5 @@
 {
- "count": 6,
+ "count": 7,
  "log": [
   {
    "cmd": "whoami",
@@ -24,8 +24,44 @@
   {
    "cmd": "fortune",
    "out": "there are 2 hard problems in CS: cache invalidation, naming, and off-by-one."
+  },
+  {
+   "cmd": "play 2048",
+   "out": "2048\n   .      .      .      .\n   .      .      .      .\n   .      .      2      2\n   .      .      .      .\nscore 0   move: up/down/left/right  ·  quit"
   }
  ],
  "last_actor": "harryngai",
- "last_time": "2026-07-16 06:45 UTC"
+ "last_time": "2026-07-16 06:54 UTC",
+ "game": {
+  "name": "2048",
+  "board": [
+   [
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    2,
+    2
+   ],
+   [
+    0,
+    0,
+    0,
+    0
+   ]
+  ],
+  "score": 0,
+  "over": false,
+  "won": false
+ }
 }
