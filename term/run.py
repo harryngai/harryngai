@@ -417,8 +417,9 @@ def mines_cmd(s, cmd, args):
     g = s["game"]
     if g["over"] or g["won"]: return "game finished. `play mines` for a fresh board."
     if cmd in ("flag", "f") and not args:
-        g["flagmode"] = not g.get("flagmode")
-        return "flag mode ON — clicks plant flags." if g["flagmode"] else "reveal mode ON."
+        g["flagmode"] = True; return "flag mode ON — click cells to plant flags."
+    if cmd in ("reveal", "r", "dig", "open") and not args:
+        g["flagmode"] = False; return "reveal mode ON — click cells to open them."
     if not args: return f"usage: {cmd} <cell>   e.g.  {cmd} e5"
     rc = _cell(args[0])
     if not rc: return f"'{args[0]}'? use a cell like  b3  (row a-i, col 1-9)"
@@ -507,12 +508,27 @@ def _cell_kind(g, r, c):
     if g["flag"][r][c]: return ("flag", 0)
     return ("covered", 0)
 
-def render_mines_cells(g):
+def _btn_svg(text, style):
+    w = 22 + int(len(text) * 8.6); h = 34
+    fill, stroke, tcol = {"on":  ("#238636", "#2ea043", "#ffffff"),
+                          "off": ("#21262d", "#30363d", "#8b949e"),
+                          "act": ("#1f6feb", "#388bfd", "#ffffff")}[style]
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
+            f'viewBox="0 0 {w} {h}" font-family="{FONT}">'
+            f'<rect x="1" y="1" width="{w-2}" height="{h-2}" rx="9" fill="{fill}" stroke="{stroke}"/>'
+            f'<text x="{w/2}" y="{h/2+5}" text-anchor="middle" font-size="14" '
+            f'font-weight="bold" fill="{tcol}">{esc(text)}</text></svg>')
+
+def render_mines_assets(s, g):
     CELLS.mkdir(parents=True, exist_ok=True)
     for r in range(g["n"]):
         for c in range(g["n"]):
             k, v = _cell_kind(g, r, c)
             (CELLS / f"{chr(65+r)}{c+1}.svg").write_text(_cell_svg(k, v))
+    fm = g.get("flagmode")
+    (CELLS / "btn_reveal.svg").write_text(_btn_svg("⛏ REVEAL", "off" if fm else "on"))
+    (CELLS / "btn_flag.svg").write_text(_btn_svg("⚑ FLAG", "on" if fm else "off"))
+    (CELLS / "btn_new.svg").write_text(_btn_svg("↻ NEW GAME", "act"))
 
 def mines_board_md(s, g):
     N = g["n"]; ver = s["count"]
@@ -530,21 +546,26 @@ def mines_board_md(s, g):
                 act = "flag" if (fm or g["flag"][r][c]) else "reveal"
                 row.append(f'<a href="{issue_link(act + " " + cid.lower())}">{img}</a>')
         rows.append("".join(row))
-    grid = "<br>".join(rows)
-    F = sum(map(sum, g["flag"]))
-    if g["over"]:   st = "💥 **boom — game over.**"
-    elif g["won"]:  st = "🎉 **swept! you win.**"
-    else:           st = ("⚑ **flag mode** — clicks plant flags"
-                          if fm else "⛏️ **reveal mode** — clicks open cells")
-    tog = ("[switch to reveal](%s)" if fm else "[switch to ⚑ flag](%s)") % issue_link("flag")
-    ctl = (f"[🔄 new game]({issue_link('play mines')}) · [◼ quit]({issue_link('quit')})"
-           if done else f"{tog} · [🔄 new game]({issue_link('play mines')})")
-    return (f"<div align=\"left\">{grid}</div>\n\n{st} — mines {g['m']} · flags {F} · "
-            f"cleared {sum(map(sum, g['shown']))}/{N*N-g['m']}\n\n{ctl}")
+    grid = f'<div align="left">{"<br>".join(rows)}</div>'
+
+    def btn(name, cmd):
+        return (f'<a href="{issue_link(cmd)}"><img src="{base}/{name}.svg?v={ver}" '
+                f'height="30" alt="{cmd}"></a>')
+    if done:
+        controls = btn("btn_new", "play mines")
+    else:
+        controls = (btn("btn_reveal", "reveal") + " " + btn("btn_flag", "flag")
+                    + " &nbsp; " + btn("btn_new", "play mines"))
+
+    F = sum(map(sum, g["flag"])); cleared = sum(map(sum, g["shown"]))
+    tag = ("💥 <b>GAME OVER</b>" if g["over"] else "🎉 <b>YOU WIN</b>" if g["won"]
+           else f"mines {g['m']} · flags {F} · cleared {cleared}/{N*N-g['m']}")
+    return (f"{grid}\n\n{controls}\n\n"
+            f"<sub>{tag} &nbsp;·&nbsp; click a square — first move is always safe · ~30s to update</sub>")
 
 def render_assets(s):
     g = s.get("game"); name = g.get("name") if g else None
-    if name == "mines":   render_mines_cells(g)
+    if name == "mines":   render_mines_assets(s, g)
     elif name == "2048":  SVG.write_text(svg_2048(s, g))
     else:                 SVG.write_text(svg_terminal(s))
 
@@ -563,14 +584,7 @@ def render(s):
     links = " · ".join(f"[`{c}`]({issue_link(c)})" for c in BAR)
     barline = f"**run:**  {links}  ·  [`type your own →`]({issue_link('your command here')})"
     if g and g.get("name") == "mines":
-        parts = [
-            "### ▸ minesweeper — click a cell", "",
-            mines_board_md(s, g), "",
-            "<sub>each square is a clickable image → opens a 1-click issue → a GitHub "
-            "Action reveals it and the board updates (~30s). also works by typing "
-            "`reveal e5` / `flag c3`. first click is always safe.</sub>", "",
-            "---", "", barline, "",
-        ]
+        parts = ["### ▸ minesweeper", "", mines_board_md(s, g), ""]
     else:
         img = (f"https://raw.githubusercontent.com/{USER}/{USER}/main/term/screen.svg"
                f"?v={s['count']}")
